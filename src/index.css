@@ -23,6 +23,9 @@
     .h-86 {
         height:86px;
     }
+    .h-120{
+        height:30rem;
+    }
     .bg-primary {
         background-color: #EABF00;
     }

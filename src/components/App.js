@@ -1,95 +1,83 @@
-import React from 'react';
+//change isCartOpen
+import { useState } from 'react';
+import { products } from '../data.json';
 import Aside from './Aside';
 import Products from './Products';
 import Cart from './Cart';
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      activeSizes: [],
-      activeOrder: 'default',
-      cart: {},
-      isCartOpen:false
-    };
-  }
-  
-  handleSortBySize = (event) => {
+function App() {
+  const [activeSizes, setActiveSizes] = useState([]);
+  const [activeOrder, setActiveOrder] = useState('default');
+  const [cart, setCart] = useState({});
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleSortBySize = (event) => {
     let { value } = event.target;
-    let sizes = this.state.activeSizes;
+    console.log(activeSizes);
+    let sizes = activeSizes;
     if (sizes.indexOf(value) === -1) {
       sizes.push(value);
     } else {
       sizes.splice(sizes.indexOf(value), 1);
     }
-    this.setState({
-      activeSizes: sizes,
-    });
+    setActiveSizes([...sizes]);
   };
-  handleSortByPrice = (event) => {
-    this.setState({
-      activeOrder: event.target.value,
-    });
+  const handleSortByPrice = (event) => {
+    setActiveOrder(event.target.value);
   };
-  addToCart = (index) => {
-    let cartItems = this.state.cart;
+  const addToCart = (index) => {
+    let cartItems = cart;
     let keys = Object.keys(cartItems);
     if (keys.indexOf(String(index)) !== -1) {
       cartItems[index] = Number(cartItems[index]) + 1;
-      this.setState((prevState) => ({
-        cart: cartItems,
-        isCartOpen:true
-      }));
     } else {
       cartItems[index] = 1;
-      this.setState({
-        cart: cartItems,
-        isCartOpen:true
-      });
     }
+    setCart({ ...cartItems });
+    setIsCartOpen(true);
   };
-  decreaseQuantity = (index) => {
-    let cartItems = this.state.cart;
+  const decreaseQuantity = (index) => {
+    let cartItems = cart;
     if (cartItems[index] > 1) {
       cartItems[index] = Number(cartItems[index]) - 1;
-      this.setState((prevState) => ({
-        cart: cartItems,
-      }));
+      setCart({ ...cartItems });
     } else {
       return;
     }
   };
-  removeFromCart = (index) => {
-    let cartItems = this.state.cart;
-    delete cartItems[index]
-      this.setState((prevState) => ({
-        cart: cartItems,
-      }));
+  const removeFromCart = (index) => {
+    let cartItems = cart;
+    delete cartItems[index];
+    setCart({ ...cartItems });
   };
-  handleCartToggle = () => {
-    this.setState((prevState)=>({
-      isCartOpen: !prevState.isCartOpen
-    }))
-  }
- 
-  render() {
-    return (
-      <main className="flex container">
-        <Aside state={this.state} handleSortBySize={this.handleSortBySize} />
-        <Products
-          state={this.state}
-          handleSortByPrice={this.handleSortByPrice}
-          addToCart={this.addToCart}
-        />
-        <Cart
-          state={this.state}
-          addToCart={this.addToCart}
-          decreaseQuantity={this.decreaseQuantity}
-          removeFromCart = {this.removeFromCart}
-          handleCartToggle = {this.handleCartToggle}
-        />
-      </main>
-    );
-  }
+  const handleCartToggle = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
+  return (
+    <main className="flex container">
+      <Aside
+        activeSizes={activeSizes}
+        handleSortBySize={handleSortBySize}
+        products={products}
+      />
+      <Products
+        products={products}
+        activeSizes={activeSizes}
+        activeOrder={activeOrder}
+        addToCart={addToCart}
+        handleSortByPrice={handleSortByPrice}
+      />
+      <Cart
+        products={products}
+        cart={cart}
+        addToCart={addToCart}
+        decreaseQuantity={decreaseQuantity}
+        removeFromCart={removeFromCart}
+        handleCartToggle={handleCartToggle}
+        isCartOpen={isCartOpen}
+      />
+    </main>
+  );
 }
 
 export default App;
