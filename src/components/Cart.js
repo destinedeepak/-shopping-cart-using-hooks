@@ -30,7 +30,7 @@ function Cart(props) {
     return <Thumb handleCartToggle={handleCartToggle} />;
   }
   return (
-    <section className="absolute top-0 right-0">
+    <section className="fixed top-0 right-0">
       <div className="flex">
         <button
           className="w-12 cursor-pointer h-12 bg-secondary text-white flex justify-center items-center text-2xl"
